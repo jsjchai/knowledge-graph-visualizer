@@ -1,610 +1,610 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2024年知识图谱 - 图形化知识库可视化系统</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #8b5cf6;
-            --accent: #06b6d4;
-            --light: #f8fafc;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --gray-light: #e2e8f0;
-            --card-bg: #ffffff;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.7;
-            color: var(--dark);
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
-            min-height: 100vh;
-            background-attachment: fixed;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* 头部样式 */
-        .header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: var(--radius);
-            padding: 60px 40px;
-            margin-bottom: 40px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" opacity="0.1"><path d="M0,0 L100,0 L100,100 Z" fill="white"/></svg>');
-            background-size: cover;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .year-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 12px 24px;
-            border-radius: 50px;
-            margin-bottom: 25px;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-        
-        .year-badge i {
-            font-size: 1.2em;
-        }
-        
-        h1 {
-            font-size: 3.2em;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        .subtitle {
-            font-size: 1.3em;
-            opacity: 0.9;
-            max-width: 700px;
-            margin-bottom: 30px;
-        }
-        
-        /* 统计卡片 */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 25px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid var(--gray-light);
-            text-align: center;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary);
-        }
-        
-        .stat-icon {
-            font-size: 2.5em;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        
-        .stat-number {
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.95em;
-        }
-        
-        /* 分类网格 */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 50px 0;
-        }
-        
-        .category-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: var(--transition);
-        }
-        
-        .category-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary);
-        }
-        
-        .category-card:hover::before {
-            height: 6px;
-        }
-        
-        .category-icon {
-            font-size: 2.5em;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        
-        .category-title {
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-        
-        .category-desc {
-            color: var(--gray);
-            margin-bottom: 20px;
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-        
-        .file-list {
-            margin-top: 15px;
-            padding-left: 20px;
-        }
-        
-        .file-list li {
-            margin-bottom: 5px;
-            color: var(--gray);
-            font-size: 0.9em;
-        }
-        
-        .category-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-light);
-            font-size: 0.9em;
-        }
-        
-        .file-count {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--gray);
-        }
-        
-        .view-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: var(--transition);
-        }
-        
-        .view-link:hover {
-            color: var(--secondary);
-            gap: 8px;
-        }
-        
-        /* 页脚 */
-        .footer {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--gray);
-            margin-top: 60px;
-            border-top: 1px solid var(--gray-light);
-        }
-        
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-        
-        .nav-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .nav-button.primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .nav-button.primary:hover {
-            background: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }
-        
-        .nav-button.secondary {
-            background: var(--light);
-            color: var(--dark);
-            border: 2px solid var(--gray-light);
-        }
-        
-        .nav-button.secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-3px);
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .header {
-                padding: 40px 20px;
-            }
-            
-            h1 {
-                font-size: 2.5em;
-            }
-            
-            .subtitle {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>2024年知识图谱 - 图形化知识库可视化系统</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                --primary: #6366f1;
+                --secondary: #8b5cf6;
+                --accent: #06b6d4;
+                --light: #f8fafc;
+                --dark: #1e293b;
+                --gray: #64748b;
+                --gray-light: #e2e8f0;
+                --card-bg: #ffffff;
+                --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+                --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
+                --radius: 12px;
+                --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                }
+
+                body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                line-height: 1.7;
+                color: var(--dark);
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+                min-height: 100vh;
+                background-attachment: fixed;
+                }
+
+                .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+                }
+
+                /* 头部样式 */
+                .header {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                color: white;
+                border-radius: var(--radius);
+                padding: 60px 40px;
+                margin-bottom: 40px;
+                box-shadow: var(--shadow);
+                position: relative;
+                overflow: hidden;
+                }
+
+                .header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" opacity="0.1"><path d="M0,0 L100,0 L100,100 Z" fill="white"/></svg>');
+                background-size: cover;
+                }
+
+                .header-content {
+                position: relative;
+                z-index: 1;
+                }
+
+                .year-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                padding: 12px 24px;
+                border-radius: 50px;
+                margin-bottom: 25px;
+                font-weight: 600;
                 font-size: 1.1em;
-            }
-            
-            .categories-grid {
+                }
+
+                .year-badge i {
+                font-size: 1.2em;
+                }
+
+                h1 {
+                font-size: 3.2em;
+                font-weight: 800;
+                margin-bottom: 20px;
+                line-height: 1.2;
+                }
+
+                .subtitle {
+                font-size: 1.3em;
+                opacity: 0.9;
+                max-width: 700px;
+                margin-bottom: 30px;
+                }
+
+                /* 统计卡片 */
+                .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin: 40px 0;
+                }
+
+                .stat-card {
+                background: var(--card-bg);
+                border-radius: var(--radius);
+                padding: 25px;
+                box-shadow: var(--shadow);
+                transition: var(--transition);
+                border: 1px solid var(--gray-light);
+                text-align: center;
+                }
+
+                .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-hover);
+                border-color: var(--primary);
+                }
+
+                .stat-icon {
+                font-size: 2.5em;
+                color: var(--primary);
+                margin-bottom: 15px;
+                }
+
+                .stat-number {
+                font-size: 2.2em;
+                font-weight: 700;
+                color: var(--dark);
+                margin-bottom: 5px;
+                }
+
+                .stat-label {
+                color: var(--gray);
+                font-size: 0.95em;
+                }
+
+                /* 分类网格 */
+                .categories-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 25px;
+                margin: 50px 0;
+                }
+
+                .category-card {
+                background: var(--card-bg);
+                border-radius: var(--radius);
+                padding: 30px;
+                box-shadow: var(--shadow);
+                transition: var(--transition);
+                border: 2px solid transparent;
+                position: relative;
+                overflow: hidden;
+                }
+
+                .category-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary), var(--secondary));
+                transition: var(--transition);
+                }
+
+                .category-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-hover);
+                border-color: var(--primary);
+                }
+
+                .category-card:hover::before {
+                height: 6px;
+                }
+
+                .category-icon {
+                font-size: 2.5em;
+                color: var(--primary);
+                margin-bottom: 20px;
+                }
+
+                .category-title {
+                font-size: 1.4em;
+                font-weight: 700;
+                margin-bottom: 15px;
+                color: var(--dark);
+                }
+
+                .category-desc {
+                color: var(--gray);
+                margin-bottom: 20px;
+                font-size: 0.95em;
+                line-height: 1.6;
+                }
+
+                .file-list {
+                margin-top: 15px;
+                padding-left: 20px;
+                }
+
+                .file-list li {
+                margin-bottom: 5px;
+                color: var(--gray);
+                font-size: 0.9em;
+                }
+
+                .category-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid var(--gray-light);
+                font-size: 0.9em;
+                }
+
+                .file-count {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: var(--gray);
+                }
+
+                .view-link {
+                color: var(--primary);
+                text-decoration: none;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                transition: var(--transition);
+                }
+
+                .view-link:hover {
+                color: var(--secondary);
+                gap: 8px;
+                }
+
+                /* 页脚 */
+                .footer {
+                text-align: center;
+                padding: 50px 20px;
+                color: var(--gray);
+                margin-top: 60px;
+                border-top: 1px solid var(--gray-light);
+                }
+
+                .nav-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin: 30px 0;
+                flex-wrap: wrap;
+                }
+
+                .nav-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 15px 30px;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: var(--transition);
+                }
+
+                .nav-button.primary {
+                background: var(--primary);
+                color: white;
+                }
+
+                .nav-button.primary:hover {
+                background: var(--secondary);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+                }
+
+                .nav-button.secondary {
+                background: var(--light);
+                color: var(--dark);
+                border: 2px solid var(--gray-light);
+                }
+
+                .nav-button.secondary:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+                transform: translateY(-3px);
+                }
+
+                /* 响应式设计 */
+                @media (max-width: 768px) {
+                .header {
+                padding: 40px 20px;
+                }
+
+                h1 {
+                font-size: 2.5em;
+                }
+
+                .subtitle {
+                font-size: 1.1em;
+                }
+
+                .categories-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
+                }
+
+                .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .stats-grid {
+                }
+                }
+
+                @media (max-width: 480px) {
+                .stats-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .nav-buttons {
+                }
+
+                .nav-buttons {
                 flex-direction: column;
                 align-items: stretch;
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate {
-            animation: fadeInUp 0.6s ease-out;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- 头部 -->
-        <header class="header animate">
-            <div class="header-content">
-                <div class="year-badge">
-                    <i class="fas fa-calendar-star"></i>
-                    <span>2024年度知识图谱</span>
-                </div>
-                
-                <h1>2024年知识图谱</h1>
-                <p class="subtitle">技术深度与广度并重发展的进阶阶段，探索前沿技术和复杂系统，提升综合技术能力</p>
-            </div>
-        </header>
-        
-        <!-- 统计信息 -->
-        <div class="stats-grid">
-            <div class="stat-card animate">
-                <div class="stat-icon">
-                    <i class="fas fa-folder-open"></i>
-                </div>
-                <div class="stat-number">2</div>
-                <div class="stat-label">知识分类</div>
-            </div>
-            
-            <div class="stat-card animate">
-                <div class="stat-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="stat-number">10+</div>
-                <div class="stat-label">学习文档</div>
-            </div>
-            
-            <div class="stat-card animate">
-                <div class="stat-icon">
-                    <i class="fas fa-layer-group"></i>
-                </div>
-                <div class="stat-number">2</div>
-                <div class="stat-label">总项目数</div>
-            </div>
-            
-            <div class="stat-card animate">
-                <div class="stat-icon">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="stat-number">2024</div>
-                <div class="stat-label">学习年份</div>
-            </div>
-        </div>
-        
-        <!-- 分类展示 -->
-        <section class="animate">
-            <h2 style="color: var(--dark); margin-bottom: 30px; font-size: 1.8em;">
-                <i class="fas fa-sitemap"></i> 知识分类
-            </h2>
-            
-            <div class="categories-grid">
-                <!-- 书籍 -->
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="category-title">书籍</div>
-                    <div class="category-desc">数据仓库与数据分析相关技术书籍学习，构建企业级数据分析知识体系</div>
-                    
-                    <div class="file-list">
-                        <strong>学习书籍:</strong>
-                        <ul>
-                            <li>数据仓库工具箱（第三版） - 企业级数据仓库设计与实现</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="category-meta">
-                        <div class="file-count">
-                            <i class="fas fa-folder"></i>
-                            <span>1个书籍分类</span>
-                        </div>
-                        <a href="https://github.com/jsjchai/study-notes/tree/master/2024/书籍" class="view-link" target="_blank">
-                            <span>查看详情</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 问题与思考 -->
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div class="category-title">问题与思考</div>
-                    <div class="category-desc">记录技术实践中的问题和解决方案，深入思考数据分析和系统架构技术</div>
-                    
-                    <div class="file-list">
-                        <strong>部分文档:</strong>
-                        <ul>
-                            <li>01. 数据仓库工具箱.md</li>
-                            <li>02. 数据仓库工具箱-维度建模.md</li>
-                            <li>03. 数据仓库工具箱-事实表.md</li>
-                            <li>04. 数据仓库工具箱-维度表.md</li>
-                            <li>05. 数据仓库工具箱-缓慢变化维度.md</li>
-                            <li>...等9个技术文档</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="category-meta">
-                        <div class="file-count">
-                            <i class="fas fa-file-alt"></i>
-                            <span>9个文档</span>
-                        </div>
-                        <a href="https://github.com/jsjchai/study-notes/tree/master/2024/问题与思考" class="view-link" target="_blank">
-                            <span>查看详情</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- 学习重点 -->
-        <section class="animate" style="margin-top: 60px;">
-            <h2 style="color: var(--dark); margin-bottom: 30px; font-size: 1.8em;">
-                <i class="fas fa-bullseye"></i> 2024年学习重点
-            </h2>
-            
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon" style="color: var(--accent);">
-                        <i class="fas fa-warehouse"></i>
-                    </div>
-                    <div class="category-title">数据仓库技术</div>
-                    <div class="category-desc">
-                        <ul style="padding-left: 20px; margin-top: 10px;">
-                            <li>数据仓库设计与建模</li>
-                            <li>维度建模方法论</li>
-                            <li>事实表与维度表设计</li>
-                            <li>缓慢变化维度处理</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="category-card">
-                    <div class="category-icon" style="color: var(--accent);">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="category-title">数据分析体系</div>
-                    <div class="category-desc">
-                        <ul style="padding-left: 20px; margin-top: 10px;">
-                            <li>企业级数据分析架构</li>
-                            <li>数据治理与质量管理</li>
-                            <li>BI报表与可视化</li>
-                            <li>数据驱动决策体系</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="category-card">
-                    <div class="category-icon" style="color: var(--accent);">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <div class="category-title">技术综合应用</div>
-                    <div class="category-desc">
-                        <ul style="padding-left: 20px; margin-top: 10px;">
-                            <li>多技术领域融合应用</li>
-                            <li>复杂系统架构设计</li>
-                            <li>技术方案整合优化</li>
-                            <li>全栈技术能力提升</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- 技术趋势 -->
-        <section class="animate" style="margin-top: 60px; background: var(--light); padding: 40px; border-radius: var(--radius);">
-            <h2 style="color: var(--dark); margin-bottom: 20px; font-size: 1.8em;">
-                <i class="fas fa-chart-line"></i> 2024年技术趋势
-            </h2>
-            <p style="color: var(--gray); line-height: 1.8;">
-                2024年重点关注数据仓库和数据分析技术的深入学习，构建企业级数据分析知识体系。
-                从系统架构设计转向数据驱动决策，学习数据仓库设计、维度建模和数据分析技术，
-                为构建数据驱动的智能系统奠定基础。
-            </p>
-        </section>
-        
-        <!-- 导航按钮 -->
-        <div class="nav-buttons">
-            <a href="index.html" class="nav-button primary">
-                <i class="fas fa-home"></i>
-                返回知识库首页
-            </a>
-            
-            <a href="https://github.com/jsjchai/study-notes/tree/master/2024" class="nav-button secondary" target="_blank">
-                <i class="fab fa-github"></i>
-                查看GitHub原始文件
-            </a>
-            
-            <a href="2023.html" class="nav-button secondary">
-                <i class="fas fa-arrow-left"></i>
-                查看2023年图谱
-            </a>
-            
-            <a href="2025.html" class="nav-button secondary">
-                <i class="fas fa-arrow-right"></i>
-                查看2025年图谱
-            </a>
-        </div>
-        
-        <!-- 页脚 -->
-        <footer class="footer">
-            <div style="max-width: 600px; margin: 0 auto;">
-                <h3 style="margin-bottom: 20px; color: var(--dark);">关于2024年知识图谱</h3>
-                <p style="margin-bottom: 20px;">
-                    2024年是技术深度与广度并重发展的进阶阶段，专注于数据仓库和数据分析技术的深入学习，
-                    构建企业级数据分析知识体系，为数据驱动的智能系统奠定基础。
-                </p>
-                <p style="font-size: 0.9em; color: var(--gray); margin-bottom: 30px;">
-                    <i class="fas fa-info-circle"></i> 提示：所有学习笔记均可在GitHub仓库中查看原始文件
-                </p>
-                
-                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-light);">
-                    <p>© 2026 图形化知识库可视化系统 · 2024年度专题</p>
-                    <p style="font-size: 0.9em; margin-top: 10px; color: var(--gray);">
-                        最后更新: 2026年3月 · 知识需要积累，成长需要记录
-                    </p>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-    <script>
-        // 简单的交互效果
-        document.addEventListener('DOMContentLoaded', function() {
-            // 为所有卡片添加点击效果
-            const cards = document.querySelectorAll('.category-card, .stat-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            });
-            
-            // 滚动动画
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate');
-                    }
-                });
-            }, observerOptions);
-            
-            // 观察所有部分
-            document.querySelectorAll('section').forEach(section => {
-                observer.observe(section);
-            });
-        });
-    </script>
-</body>
-</html>
+                }
+                }
+
+                /* 动画效果 */
+                @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+                }
+
+                .animate {
+                animation: fadeInUp 0.6s ease-out;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <!-- 头部 -->
+                <header class="header animate">
+                    <div class="header-content">
+                        <div class="year-badge">
+                            <i class="fas fa-calendar-star"></i>
+                                <span>2024年度知识图谱</span>
+                                </div>
+
+                                <h1>2024年知识图谱</h1>
+                                    <p class="subtitle">技术深度与广度并重发展的进阶阶段，探索前沿技术和复杂系统，提升综合技术能力</p>
+                                    </div>
+                                </header>
+
+                                <!-- 统计信息 -->
+                                <div class="stats-grid">
+                                    <div class="stat-card animate">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-folder-open"></i>
+                                            </div>
+                                            <div class="stat-number">2</div>
+                                                <div class="stat-label">知识分类</div>
+                                                </div>
+
+                                                <div class="stat-card animate">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-file-alt"></i>
+                                                        </div>
+                                                        <div class="stat-number">10+</div>
+                                                            <div class="stat-label">学习文档</div>
+                                                            </div>
+
+                                                            <div class="stat-card animate">
+                                                                <div class="stat-icon">
+                                                                    <i class="fas fa-layer-group"></i>
+                                                                    </div>
+                                                                    <div class="stat-number">2</div>
+                                                                        <div class="stat-label">总项目数</div>
+                                                                        </div>
+
+                                                                        <div class="stat-card animate">
+                                                                            <div class="stat-icon">
+                                                                                <i class="fas fa-graduation-cap"></i>
+                                                                                </div>
+                                                                                <div class="stat-number">2024</div>
+                                                                                    <div class="stat-label">学习年份</div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- 分类展示 -->
+                                                                                <section class="animate">
+                                                                                    <h2 style="color: var(--dark); margin-bottom: 30px; font-size: 1.8em;">
+                                                                                        <i class="fas fa-sitemap"></i> 知识分类
+                                                                                        </h2>
+
+                                                                                        <div class="categories-grid">
+                                                                                            <!-- 书籍 -->
+                                                                                            <div class="category-card">
+                                                                                                <div class="category-icon">
+                                                                                                    <i class="fas fa-book"></i>
+                                                                                                    </div>
+                                                                                                    <div class="category-title">书籍</div>
+                                                                                                        <div class="category-desc">数据仓库与数据分析相关技术书籍学习，构建企业级数据分析知识体系</div>
+
+                                                                                                            <div class="file-list">
+                                                                                                                <strong>学习书籍:</strong>
+                                                                                                                    <ul>
+                                                                                                                        <li>数据仓库工具箱（第三版） - 企业级数据仓库设计与实现</li>
+                                                                                                                        </ul>
+                                                                                                                    </div>
+
+                                                                                                                    <div class="category-meta">
+                                                                                                                        <div class="file-count">
+                                                                                                                            <i class="fas fa-folder"></i>
+                                                                                                                                <span>1个书籍分类</span>
+                                                                                                                                </div>
+                                                                                                                                <a href="https://github.com/jsjchai/study-notes/tree/master/2024/书籍" class="view-link" target="_blank">
+                                                                                                                                    <span>查看详情</span>
+                                                                                                                                        <i class="fas fa-arrow-right"></i>
+                                                                                                                                        </a>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+
+                                                                                                                                <!-- 问题与思考 -->
+                                                                                                                                <div class="category-card">
+                                                                                                                                    <div class="category-icon">
+                                                                                                                                        <i class="fas fa-lightbulb"></i>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="category-title">问题与思考</div>
+                                                                                                                                            <div class="category-desc">记录技术实践中的问题和解决方案，深入思考数据分析和系统架构技术</div>
+
+                                                                                                                                                <div class="file-list">
+                                                                                                                                                    <strong>部分文档:</strong>
+                                                                                                                                                        <ul>
+                                                                                                                                                            <li>01. 数据仓库工具箱.md</li>
+                                                                                                                                                                <li>02. 数据仓库工具箱-维度建模.md</li>
+                                                                                                                                                                    <li>03. 数据仓库工具箱-事实表.md</li>
+                                                                                                                                                                        <li>04. 数据仓库工具箱-维度表.md</li>
+                                                                                                                                                                            <li>05. 数据仓库工具箱-缓慢变化维度.md</li>
+                                                                                                                                                                                <li>...等9个技术文档</li>
+                                                                                                                                                                                </ul>
+                                                                                                                                                                            </div>
+
+                                                                                                                                                                            <div class="category-meta">
+                                                                                                                                                                                <div class="file-count">
+                                                                                                                                                                                    <i class="fas fa-file-alt"></i>
+                                                                                                                                                                                        <span>9个文档</span>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <a href="https://github.com/jsjchai/study-notes/tree/master/2024/问题与思考" class="view-link" target="_blank">
+                                                                                                                                                                                            <span>查看详情</span>
+                                                                                                                                                                                                <i class="fas fa-arrow-right"></i>
+                                                                                                                                                                                                </a>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </section>
+
+                                                                                                                                                                                <!-- 学习重点 -->
+                                                                                                                                                                                <section class="animate" style="margin-top: 60px;">
+                                                                                                                                                                                    <h2 style="color: var(--dark); margin-bottom: 30px; font-size: 1.8em;">
+                                                                                                                                                                                        <i class="fas fa-bullseye"></i> 2024年学习重点
+                                                                                                                                                                                        </h2>
+
+                                                                                                                                                                                        <div class="categories-grid">
+                                                                                                                                                                                            <div class="category-card">
+                                                                                                                                                                                                <div class="category-icon" style="color: var(--accent);">
+                                                                                                                                                                                                    <i class="fas fa-warehouse"></i>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                    <div class="category-title">数据仓库技术</div>
+                                                                                                                                                                                                        <div class="category-desc">
+                                                                                                                                                                                                            <ul style="padding-left: 20px; margin-top: 10px;">
+                                                                                                                                                                                                                <li>数据仓库设计与建模</li>
+                                                                                                                                                                                                                    <li>维度建模方法论</li>
+                                                                                                                                                                                                                        <li>事实表与维度表设计</li>
+                                                                                                                                                                                                                            <li>缓慢变化维度处理</li>
+                                                                                                                                                                                                                            </ul>
+                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                    </div>
+
+                                                                                                                                                                                                                    <div class="category-card">
+                                                                                                                                                                                                                        <div class="category-icon" style="color: var(--accent);">
+                                                                                                                                                                                                                            <i class="fas fa-chart-bar"></i>
+                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                            <div class="category-title">数据分析体系</div>
+                                                                                                                                                                                                                                <div class="category-desc">
+                                                                                                                                                                                                                                    <ul style="padding-left: 20px; margin-top: 10px;">
+                                                                                                                                                                                                                                        <li>企业级数据分析架构</li>
+                                                                                                                                                                                                                                            <li>数据治理与质量管理</li>
+                                                                                                                                                                                                                                                <li>BI报表与可视化</li>
+                                                                                                                                                                                                                                                    <li>数据驱动决策体系</li>
+                                                                                                                                                                                                                                                    </ul>
+                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                            </div>
+
+                                                                                                                                                                                                                                            <div class="category-card">
+                                                                                                                                                                                                                                                <div class="category-icon" style="color: var(--accent);">
+                                                                                                                                                                                                                                                    <i class="fas fa-cogs"></i>
+                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                    <div class="category-title">技术综合应用</div>
+                                                                                                                                                                                                                                                        <div class="category-desc">
+                                                                                                                                                                                                                                                            <ul style="padding-left: 20px; margin-top: 10px;">
+                                                                                                                                                                                                                                                                <li>多技术领域融合应用</li>
+                                                                                                                                                                                                                                                                    <li>复杂系统架构设计</li>
+                                                                                                                                                                                                                                                                        <li>技术方案整合优化</li>
+                                                                                                                                                                                                                                                                            <li>全栈技术能力提升</li>
+                                                                                                                                                                                                                                                                            </ul>
+                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                            </section>
+
+                                                                                                                                                                                                                                                            <!-- 技术趋势 -->
+                                                                                                                                                                                                                                                            <section class="animate" style="margin-top: 60px; background: var(--light); padding: 40px; border-radius: var(--radius);">
+                                                                                                                                                                                                                                                                <h2 style="color: var(--dark); margin-bottom: 20px; font-size: 1.8em;">
+                                                                                                                                                                                                                                                                    <i class="fas fa-chart-line"></i> 2024年技术趋势
+                                                                                                                                                                                                                                                                    </h2>
+                                                                                                                                                                                                                                                                    <p style="color: var(--gray); line-height: 1.8;">
+                                                                                                                                                                                                                                                                        2024年重点关注数据仓库和数据分析技术的深入学习，构建企业级数据分析知识体系。
+                                                                                                                                                                                                                                                                        从系统架构设计转向数据驱动决策，学习数据仓库设计、维度建模和数据分析技术，
+                                                                                                                                                                                                                                                                        为构建数据驱动的智能系统奠定基础。
+                                                                                                                                                                                                                                                                    </p>
+                                                                                                                                                                                                                                                                </section>
+
+                                                                                                                                                                                                                                                                <!-- 导航按钮 -->
+                                                                                                                                                                                                                                                                <div class="nav-buttons">
+                                                                                                                                                                                                                                                                    <a href="index.html" class="nav-button primary">
+                                                                                                                                                                                                                                                                        <i class="fas fa-home"></i>
+                                                                                                                                                                                                                                                                            返回知识库首页
+                                                                                                                                                                                                                                                                        </a>
+
+                                                                                                                                                                                                                                                                        <a href="https://github.com/jsjchai/study-notes/tree/master/2024" class="nav-button secondary" target="_blank">
+                                                                                                                                                                                                                                                                            <i class="fab fa-github"></i>
+                                                                                                                                                                                                                                                                                查看GitHub原始文件
+                                                                                                                                                                                                                                                                            </a>
+
+                                                                                                                                                                                                                                                                            <a href="2023.html" class="nav-button secondary">
+                                                                                                                                                                                                                                                                                <i class="fas fa-arrow-left"></i>
+                                                                                                                                                                                                                                                                                    查看2023年图谱
+                                                                                                                                                                                                                                                                                </a>
+
+                                                                                                                                                                                                                                                                                <a href="2025.html" class="nav-button secondary">
+                                                                                                                                                                                                                                                                                    <i class="fas fa-arrow-right"></i>
+                                                                                                                                                                                                                                                                                        查看2025年图谱
+                                                                                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                                                                                                <!-- 页脚 -->
+                                                                                                                                                                                                                                                                                <footer class="footer">
+                                                                                                                                                                                                                                                                                    <div style="max-width: 600px; margin: 0 auto;">
+                                                                                                                                                                                                                                                                                        <h3 style="margin-bottom: 20px; color: var(--dark);">关于2024年知识图谱</h3>
+                                                                                                                                                                                                                                                                                            <p style="margin-bottom: 20px;">
+                                                                                                                                                                                                                                                                                                2024年是技术深度与广度并重发展的进阶阶段，专注于数据仓库和数据分析技术的深入学习，
+                                                                                                                                                                                                                                                                                                构建企业级数据分析知识体系，为数据驱动的智能系统奠定基础。
+                                                                                                                                                                                                                                                                                            </p>
+                                                                                                                                                                                                                                                                                            <p style="font-size: 0.9em; color: var(--gray); margin-bottom: 30px;">
+                                                                                                                                                                                                                                                                                                <i class="fas fa-info-circle"></i> 提示：所有学习笔记均可在GitHub仓库中查看原始文件
+                                                                                                                                                                                                                                                                                                </p>
+
+                                                                                                                                                                                                                                                                                                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-light);">
+                                                                                                                                                                                                                                                                                                    <p>© 2026 图形化知识库可视化系统 · 2024年度专题</p>
+                                                                                                                                                                                                                                                                                                        <p style="font-size: 0.9em; margin-top: 10px; color: var(--gray);">
+                                                                                                                                                                                                                                                                                                            最后更新: 2026年3月 · 知识需要积累，成长需要记录
+                                                                                                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                            </footer>
+                                                                                                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                                                                                                        <script>
+                                                                                                                                                                                                                                                                                            // 简单的交互效果
+                                                                                                                                                                                                                                                                                            document.addEventListener('DOMContentLoaded', function() {
+                                                                                                                                                                                                                                                                                            // 为所有卡片添加点击效果
+                                                                                                                                                                                                                                                                                            const cards = document.querySelectorAll('.category-card, .stat-card');
+                                                                                                                                                                                                                                                                                            cards.forEach(card => {
+                                                                                                                                                                                                                                                                                            card.addEventListener('click', function() {
+                                                                                                                                                                                                                                                                                            this.style.transform = 'scale(0.95)';
+                                                                                                                                                                                                                                                                                            setTimeout(() => {
+                                                                                                                                                                                                                                                                                            this.style.transform = '';
+                                                                                                                                                                                                                                                                                            }, 150);
+                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                            });
+
+                                                                                                                                                                                                                                                                                            // 滚动动画
+                                                                                                                                                                                                                                                                                            const observerOptions = {
+                                                                                                                                                                                                                                                                                            threshold: 0.1,
+                                                                                                                                                                                                                                                                                            rootMargin: '0px 0px -50px 0px'
+                                                                                                                                                                                                                                                                                            };
+
+                                                                                                                                                                                                                                                                                            const observer = new IntersectionObserver((entries) => {
+                                                                                                                                                                                                                                                                                            entries.forEach(entry => {
+                                                                                                                                                                                                                                                                                            if (entry.isIntersecting) {
+                                                                                                                                                                                                                                                                                            entry.target.classList.add('animate');
+                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                            }, observerOptions);
+
+                                                                                                                                                                                                                                                                                            // 观察所有部分
+                                                                                                                                                                                                                                                                                            document.querySelectorAll('section').forEach(section => {
+                                                                                                                                                                                                                                                                                            observer.observe(section);
+                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                        </script>
+                                                                                                                                                                                                                                                                                    </body>
+                                                                                                                                                                                                                                                                                </html>
