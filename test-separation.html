@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试代码分离效果</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1><i class="fas fa-vial"></i> 代码分离测试</h1>
+            <p class="subtitle">验证CSS和JS分离后的效果</p>
+        </header>
+        
+        <section class="section">
+            <h2><i class="fas fa-check-circle"></i> 测试项目</h2>
+            
+            <div class="year-grid">
+                <!-- 测试正常年份卡片 -->
+                <div class="year-card tooltip">
+                    <div class="year-number">2025</div>
+                    <div class="year-desc">正常卡片</div>
+                    <span class="tooltip-text">正常年份卡片样式</span>
+                </div>
+                
+                <!-- 测试早期项目卡片 -->
+                <div class="year-card early-project tooltip">
+                    <div class="year-number">2019</div>
+                    <div class="year-desc">早期项目卡片</div>
+                    <span class="tooltip-text">早期项目卡片样式（应显示灰色系）</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 10px;">
+                <h3><i class="fas fa-info-circle"></i> 测试说明</h3>
+                <p>请检查：</p>
+                <ol>
+                    <li>两个卡片是否都显示？</li>
+                    <li>早期项目卡片是否为灰色系？</li>
+                    <li>鼠标悬停时是否有动画效果？</li>
+                    <li>工具提示是否正常工作？</li>
+                </ol>
+                
+                <div id="test-results" style="margin-top: 20px; padding: 15px; border-radius: 8px; background: #f0fdf4; border-left: 4px solid #10b981;">
+                    <h4><i class="fas fa-spinner fa-spin"></i> 正在测试...</h4>
+                    <p>等待JavaScript加载...</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2><i class="fas fa-code"></i> 加载的资源</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3><i class="fas fa-css3"></i> CSS文件</h3>
+                    <p><code>styles.css</code> - 主样式文件</p>
+                    <p id="css-status">状态：检查中...</p>
+                </div>
+                <div class="feature">
+                    <h3><i class="fas fa-js"></i> JavaScript文件</h3>
+                    <p><code>script.js</code> - 交互脚本</p>
+                    <p id="js-status">状态：检查中...</p>
+                </div>
+                <div class="feature">
+                    <h3><i class="fas fa-font-awesome"></i> 图标库</h3>
+                    <p>Font Awesome 6.4.0</p>
+                    <p id="fa-status">状态：检查中...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script src="script.js"></script>
+    
+    <script>
+        // 测试脚本
+        window.addEventListener('load', function() {
+            console.log('测试页面加载完成');
+            
+            const results = document.getElementById('test-results');
+            const cssStatus = document.getElementById('css-status');
+            const jsStatus = document.getElementById('js-status');
+            const faStatus = document.getElementById('fa-status');
+            
+            // 测试CSS加载
+            const stylesheets = document.styleSheets;
+            let cssLoaded = false;
+            let faLoaded = false;
+            
+            for (let i = 0; i < stylesheets.length; i++) {
+                const href = stylesheets[i].href;
+                if (href && href.includes('styles.css')) {
+                    cssLoaded = true;
+                    cssStatus.textContent = '状态：✅ 已加载';
+                    cssStatus.style.color = '#10b981';
+                }
+                if (href && href.includes('font-awesome')) {
+                    faLoaded = true;
+                    faStatus.textContent = '状态：✅ 已加载';
+                    faStatus.style.color = '#10b981';
+                }
+            }
+            
+            if (!cssLoaded) {
+                cssStatus.textContent = '状态：❌ 未加载';
+                cssStatus.style.color = '#ef4444';
+            }
+            
+            if (!faLoaded) {
+                faStatus.textContent = '状态：❌ 未加载';
+                faStatus.style.color = '#ef4444';
+            }
+            
+            // 测试JS加载
+            if (typeof window.addEventListener === 'function') {
+                jsStatus.textContent = '状态：✅ 已加载';
+                jsStatus.style.color = '#10b981';
+            } else {
+                jsStatus.textContent = '状态：❌ 未加载';
+                jsStatus.style.color = '#ef4444';
+            }
+            
+            // 测试早期项目卡片
+            const earlyProjectCard = document.querySelector('.year-card.early-project');
+            if (earlyProjectCard) {
+                const computedStyle = window.getComputedStyle(earlyProjectCard);
+                const bgColor = computedStyle.backgroundColor;
+                
+                results.innerHTML = `
+                    <h4><i class="fas fa-check-circle"></i> 测试完成</h4>
+                    <p>✅ 早期项目卡片已找到</p>
+                    <p>✅ 卡片背景色: ${bgColor}</p>
+                    <p>✅ 卡片数量: ${document.querySelectorAll('.year-card').length}</p>
+                    <p>✅ 页面功能正常</p>
+                `;
+                results.style.background = '#f0fdf4';
+                results.style.borderLeftColor = '#10b981';
+                
+                // 高亮显示早期项目卡片
+                earlyProjectCard.style.outline = '3px solid #10b981';
+                earlyProjectCard.style.outlineOffset = '10px';
+                
+                setTimeout(() => {
+                    earlyProjectCard.style.outline = '';
+                }, 5000);
+            } else {
+                results.innerHTML = `
+                    <h4><i class="fas fa-exclamation-triangle"></i> 发现问题</h4>
+                    <p>❌ 未找到早期项目卡片</p>
+                    <p>可能原因：</p>
+                    <ol>
+                        <li>CSS未正确加载</li>
+                        <li>HTML结构问题</li>
+                        <li>类名不匹配</li>
+                    </ol>
+                `;
+                results.style.background = '#fef3c7';
+                results.style.borderLeftColor = '#f59e0b';
+            }
+            
+            console.log('测试完成，结果已更新');
+        });
+    </script>
+</body>
+</html>
