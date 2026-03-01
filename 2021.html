@@ -204,6 +204,17 @@
             line-height: 1.6;
         }
         
+        .file-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+        
+        .file-list li {
+            margin-bottom: 5px;
+            color: var(--gray);
+            font-size: 0.9em;
+        }
+        
         .category-meta {
             display: flex;
             justify-content: space-between;
@@ -361,7 +372,7 @@
                 <div class="stat-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
-                <div class="stat-number">0</div>
+                <div class="stat-number">20+</div>
                 <div class="stat-label">学习文档</div>
             </div>
             
@@ -395,11 +406,19 @@
                         <i class="fas fa-book"></i>
                     </div>
                     <div class="category-title">书籍</div>
-                    <div class="category-desc">阅读经典技术书籍，系统学习理论知识，构建完整的知识体系框架</div>
+                    <div class="category-desc">阅读技术书籍，系统学习理论知识，构建完整的知识体系框架</div>
+                    
+                    <div class="file-list">
+                        <strong>包含内容:</strong>
+                        <ul>
+                            <li>架构整洁之道</li>
+                        </ul>
+                    </div>
+                    
                     <div class="category-meta">
                         <div class="file-count">
                             <i class="fas fa-folder"></i>
-                            <span>多个学习笔记</span>
+                            <span>1个分类</span>
                         </div>
                         <a href="https://github.com/jsjchai/study-notes/tree/master/2021/书籍" class="view-link" target="_blank">
                             <span>查看详情</span>
@@ -415,10 +434,11 @@
                     </div>
                     <div class="category-title">机器学习</div>
                     <div class="category-desc">深入学习机器学习算法和模型，探索人工智能技术的应用和实践</div>
+                    
                     <div class="category-meta">
                         <div class="file-count">
                             <i class="fas fa-folder"></i>
-                            <span>多个学习项目</span>
+                            <span>学习目录</span>
                         </div>
                         <a href="https://github.com/jsjchai/study-notes/tree/master/2021/机器学习" class="view-link" target="_blank">
                             <span>查看详情</span>
@@ -434,10 +454,23 @@
                     </div>
                     <div class="category-title">问题与思考</div>
                     <div class="category-desc">记录技术实践中的问题和解决方案，深入思考技术原理和应用场景</div>
+                    
+                    <div class="file-list">
+                        <strong>部分文档:</strong>
+                        <ul>
+                            <li>01. 领域驱动设计.md</li>
+                            <li>02. DDD落地与实践.md</li>
+                            <li>03. 单元测试.md</li>
+                            <li>04. Linux系统级性能分析工具 — Perf.md</li>
+                            <li>05. mysql压测工具.md</li>
+                            <li>...等19个文档</li>
+                        </ul>
+                    </div>
+                    
                     <div class="category-meta">
                         <div class="file-count">
-                            <i class="fas fa-folder"></i>
-                            <span>多个思考记录</span>
+                            <i class="fas fa-file-alt"></i>
+                            <span>19个文档</span>
                         </div>
                         <a href="https://github.com/jsjchai/study-notes/tree/master/2021/问题与思考" class="view-link" target="_blank">
                             <span>查看详情</span>
@@ -526,7 +559,7 @@
         </div>
         
         <!-- 页脚 -->
-        <        <footer class="footer">
+        <footer class="footer">
             <div style="max-width: 600px; margin: 0 auto;">
                 <h3 style="margin-bottom: 20px; color: var(--dark);">关于2021年知识图谱</h3>
                 <p style="margin-bottom: 20px;">
