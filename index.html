@@ -163,6 +163,39 @@
                 
         }
 
+                /* 早期项目卡片样式 */
+                .year-card.early-project  {
+            
+                background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+                border: 2px solid #e2e8f0;
+                
+        }
+
+                .year-card.early-project::before  {
+            
+                background: linear-gradient(90deg, #94a3b8, #64748b);
+                
+        }
+
+                .year-card.early-project:hover  {
+            
+                border-color: #64748b;
+                background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+                
+        }
+
+                .year-card.early-project .year-number  {
+            
+                color: #475569;
+                
+        }
+
+                .year-card.early-project .year-desc  {
+            
+                color: #64748b;
+                
+        }
+
                 .year-number  {
             
                 font-size: 2.5em;
@@ -478,6 +511,34 @@
                                                                                                                             <div class="year-desc">专题知识库</div>
                                                                                                                                 <span class="tooltip-text">查看2020年完整知识库专题页面</span>
                                                                                                                                 </a></div>
+                                                                                                                            </section>
+
+                                                                                                                            <!-- 早期项目 -->
+                                                                                                                            <section class="section fade-in">
+                                                                                                                                <h2><i class="fas fa-history"></i> 早期项目（2018-2019）</h2>
+                                                                                                                                <p style="margin-bottom: 20px; color: var(--gray);">这些是2020年以前的技术学习记录，记录了技术成长的早期阶段</p>
+                                                                                                                                    <div class="year-grid">
+                                                                                                                                        <a href="https://github.com/jsjchai/study-notes/tree/master/2019" class="year-card early-project tooltip" target="_blank">
+                                                                                                                                            <div class="year-number">2019</div>
+                                                                                                                                            <div class="year-desc">技术基础构建</div>
+                                                                                                                                            <span class="tooltip-text">查看2019年学习笔记：Kubernetes、Java、Spring、分布式等</span>
+                                                                                                                                        </a>
+                                                                                                                                        <a href="https://github.com/jsjchai/study-notes/tree/master/2018" class="year-card early-project tooltip" target="_blank">
+                                                                                                                                            <div class="year-number">2018</div>
+                                                                                                                                            <div class="year-desc">容器技术入门</div>
+                                                                                                                                            <span class="tooltip-text">查看2018年学习笔记：Docker、FFmpeg等</span>
+                                                                                                                                        </a>
+                                                                                                                                    </div>
+                                                                                                                                    <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: var(--radius);">
+                                                                                                                                        <h3 style="margin-bottom: 15px; color: var(--dark);"><i class="fas fa-info-circle"></i> 早期项目说明</h3>
+                                                                                                                                        <p style="color: var(--gray); line-height: 1.6;">
+                                                                                                                                            <strong>2019年</strong>：技术基础构建的关键一年，涵盖了Java生态、大数据技术、分布式系统等核心领域的学习。<br>
+                                                                                                                                            <strong>2018年</strong>：容器技术入门阶段，开始接触Docker等现代化部署工具。
+                                                                                                                                        </p>
+                                                                                                                                        <p style="margin-top: 15px; color: var(--gray); font-size: 0.9em;">
+                                                                                                                                            <i class="fas fa-lightbulb"></i> 提示：早期项目以原始笔记形式保存在GitHub仓库中，点击卡片可直接查看。
+                                                                                                                                        </p>
+                                                                                                                                    </div>
                                                                                                                             </section>
 
                                                                                                                             <!-- 知识库特点 -->
